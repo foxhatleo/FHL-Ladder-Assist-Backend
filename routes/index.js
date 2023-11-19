@@ -6,9 +6,11 @@ const router = express.Router();
 
 router.get("/", (req, res, next) => {
     const dataJson = fs.readFileSync(path.join(__dirname, "..", "data", "data.json")).toString();
+    const data = JSON.parse(dataJson);
     res.json({
         version: 1,
-        apps: JSON.parse(dataJson),
+        random: data.random,
+        apps: data.apps,
     });
 });
 

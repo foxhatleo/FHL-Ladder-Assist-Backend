@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www.js"
+    "start": "node ./bin/update.js && node ./bin/www.js"
   },
   "dependencies": {
     "app-info-parser": "1.1.5",

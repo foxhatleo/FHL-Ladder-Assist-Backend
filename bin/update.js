@@ -4,9 +4,9 @@ const { Readable } = require("stream");
 const { finished } = require("stream/promises");
 const ApkParser = require("app-info-parser/src/apk");
 
-const cachePath = path.join(__dirname, "cache");
-const apkPath = path.join(__dirname, "apk");
-const dataPath = path.join(__dirname, "data.json");
+const cachePath = path.join(__dirname, "..", "data", "cache");
+const apkPath = path.join(__dirname, "..", "data", "apk");
+const dataPath = path.join(__dirname, "..", "data", "data.json");
 const expressVpnApkPath = path.join(cachePath, "expressvpn_newest.apk");
 
 fs.rmSync(cachePath, { recursive: true, force: true });
@@ -34,13 +34,16 @@ fs.mkdirSync(cachePath);
     console.log("Copied ExpressVPN.");
 
     fs.rmSync(dataPath, { recursive: true, force: true });
-    const finalJson = [
-        {
-            package: expressVpnPackageName,
-            version: expressVpnVersion,
-            filename: expressVpnDestApkFilename,
-        },
-    ];
+    const finalJson = {
+        random: Math.random().toString().substring(2),
+        apps: [
+            {
+                package: expressVpnPackageName,
+                version: expressVpnVersion,
+                filename: expressVpnDestApkFilename,
+            },
+        ],
+    };
     await fs.writeFileSync(dataPath, JSON.stringify(finalJson), "utf8");
     console.log("Finished writing data JSON.");
     fs.rmSync(cachePath, { recursive: true, force: true });
