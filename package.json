@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/update.js && node ./bin/www.js"
+    "start": "nodemon ./bin/www.js"
   },
   "dependencies": {
     "app-info-parser": "1.1.5",
     "debug": "4.3.4",
     "express": "4.18.2",
-    "morgan": "1.10.0"
+    "morgan": "1.10.0",
+    "nodemon": "3.0.1"
   },
   "devDependencies": {
     "eslint": "8.49.0",
