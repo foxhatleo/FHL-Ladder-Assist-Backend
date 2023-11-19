@@ -5,13 +5,20 @@ const path = require("path");
 const router = express.Router();
 
 router.get("/", (req, res, next) => {
-    const dataJson = fs.readFileSync(path.join(__dirname, "..", "data", "data.json")).toString();
-    const data = JSON.parse(dataJson);
-    res.json({
-        version: 1,
-        random: data.random,
-        apps: data.apps,
-    });
+    try {
+        const dataJson = fs.readFileSync(path.join(__dirname, "..", "data", "data.json")).toString();
+        const data = JSON.parse(dataJson);
+        res.json({
+            version: 1,
+            random: data.random,
+            apps: data.apps,
+        });
+    } catch (e) {
+        res.json({
+            version: 1,
+            error: "Could not load data JSON.",
+        });
+    }
 });
 
 module.exports = router;
