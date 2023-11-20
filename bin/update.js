@@ -38,6 +38,7 @@ fs.mkdirSync(cachePath);
         random: Math.random().toString().substring(2),
         apps: [
             {
+                name: "ExpressVPN",
                 package: expressVpnPackageName,
                 version: expressVpnVersion,
                 filename: expressVpnDestApkFilename,
