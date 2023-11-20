@@ -5,43 +5,69 @@ const { finished } = require("stream/promises");
 const ApkParser = require("app-info-parser/src/apk");
 
 const cachePath = path.join(__dirname, "..", "data", "cache");
-const apkPath = path.join(__dirname, "..", "data", "apk");
+const destApkFolderPath = path.join(__dirname, "..", "data", "apk");
 const dataPath = path.join(__dirname, "..", "data", "data.json");
-const expressVpnApkPath = path.join(cachePath, "expressvpn_newest.apk");
 
 fs.rmSync(cachePath, { recursive: true, force: true });
 fs.mkdirSync(cachePath);
 
+async function downloadApk(codename, friendlyName, url) {
+    console.log(`Downloading ${codename}...`);
+    const apkRes = await fetch(url);
+    const apkPath = path.join(cachePath, `${codename}_newest.apk`);
+    const apkFs = fs.createWriteStream(apkPath, { flags: "wx" });
+    await finished(Readable.fromWeb(apkRes.body).pipe(apkFs));
+    console.log(`Downloaded ${codename}.`);
+
+    console.log(`Parsing ${codename} apk...`);
+    const apkParser = new ApkParser(apkPath);
+    const apkInfo = await apkParser.parse();
+    console.log(`Parsed ${codename} apk.`);
+
+    const apkVersion = apkInfo.versionCode;
+    const apkPackage = apkInfo.package;
+    console.log(`${codename} Package name: ${apkPackage}`);
+    console.log(`${codename} Version: ${apkVersion}`);
+    const destApkFilename = `${codename}_${apkVersion}.apk`;
+    const destApkPath = path.join(destApkFolderPath, destApkFilename);
+    fs.copyFileSync(apkPath, destApkPath);
+    console.log(`Copied ${codename}.`);
+
+    return {
+        version: apkVersion,
+        package: apkPackage,
+        filename: destApkFilename,
+        friendlyName,
+    };
+}
+
 (async () => {
-    console.log("Downloading ExpressVPN...");
-    const expressVpnApkRes = await fetch("https://www.expressvpn.com/latest/android");
-    const expressVpnApkFs = fs.createWriteStream(expressVpnApkPath, { flags: "wx" });
-    await finished(Readable.fromWeb(expressVpnApkRes.body).pipe(expressVpnApkFs));
-    console.log("Downloaded ExpressVPN.");
-
-    console.log("Parsing ExpressVPN apk...");
-    const expressVpnParser = new ApkParser(expressVpnApkPath);
-    const expressVpnApkInfo = await expressVpnParser.parse();
-    console.log("Parsed ExpressVPN apk.");
-
-    const expressVpnVersion = expressVpnApkInfo.versionCode;
-    const expressVpnPackageName = expressVpnApkInfo.package;
-    console.log(`ExpressVPN Version: ${expressVpnVersion}`);
-    console.log(`ExpressVPN Package name: ${expressVpnPackageName}`);
-    const expressVpnDestApkFilename = `expressvpn_${expressVpnVersion}.apk`;
-    const expressVpnDestApkPath = path.join(apkPath, expressVpnDestApkFilename);
-    fs.copyFileSync(expressVpnApkPath, expressVpnDestApkPath);
-    console.log("Copied ExpressVPN.");
+    const expressVpn = await downloadApk(
+        "expressvpn",
+        "ExpressVPN",
+        "https://www.expressvpn.com/latest/android",
+    );
+    const v2rayng = await downloadApk(
+        "v2rayng",
+        "v2rayNG",
+        "https://github.com/2dust/v2rayNG/releases/download/1.8.5/v2rayNG_1.8.5.apk",
+    );
 
     fs.rmSync(dataPath, { recursive: true, force: true });
     const finalJson = {
         random: Math.random().toString().substring(2),
         apps: [
             {
-                name: "ExpressVPN",
-                package: expressVpnPackageName,
-                version: expressVpnVersion,
-                filename: expressVpnDestApkFilename,
+                name: expressVpn.friendlyName,
+                package: expressVpn.package,
+                version: expressVpn.version,
+                filename: expressVpn.filename,
+            },
+            {
+                name: v2rayng.friendlyName,
+                package: v2rayng.package,
+                version: v2rayng.version,
+                filename: v2rayng.filename,
             },
         ],
     };
