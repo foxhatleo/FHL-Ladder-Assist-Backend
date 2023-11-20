@@ -4,7 +4,11 @@ const path = require("path");
 
 const router = express.Router();
 
-router.get("/", (req, res, next) => {
+router.get("/", (req, res) => {
+    res.redirect("/static/latest.apk");
+});
+
+router.get("/api", (req, res, next) => {
     try {
         const dataJson = fs.readFileSync(path.join(__dirname, "..", "data", "data.json")).toString();
         const data = JSON.parse(dataJson);

@@ -11,13 +11,16 @@ const dataPath = path.join(__dirname, "..", "data", "data.json");
 fs.rmSync(cachePath, { recursive: true, force: true });
 fs.mkdirSync(cachePath);
 
-async function downloadApk(codename, friendlyName, url) {
-    console.log(`Downloading ${codename}...`);
-    const apkRes = await fetch(url);
-    const apkPath = path.join(cachePath, `${codename}_newest.apk`);
-    const apkFs = fs.createWriteStream(apkPath, { flags: "wx" });
-    await finished(Readable.fromWeb(apkRes.body).pipe(apkFs));
-    console.log(`Downloaded ${codename}.`);
+async function downloadApk(codename, friendlyName, url, localPath = undefined) {
+    const apkPath = localPath || path.join(cachePath, `${codename}_newest.apk`);
+    if (url.length > 0) {
+        console.log(`Downloading ${codename}...`);
+        const apkRes = await fetch(url);
+        const apkPath = path.join(cachePath, `${codename}_newest.apk`);
+        const apkFs = fs.createWriteStream(apkPath, { flags: "wx" });
+        await finished(Readable.fromWeb(apkRes.body).pipe(apkFs));
+        console.log(`Downloaded ${codename}.`);
+    }
 
     console.log(`Parsing ${codename} apk...`);
     const apkParser = new ApkParser(apkPath);
@@ -52,6 +55,12 @@ async function downloadApk(codename, friendlyName, url) {
         "v2rayNG",
         "https://github.com/2dust/v2rayNG/releases/download/1.8.5/v2rayNG_1.8.5.apk",
     );
+    const ladderAssist = await downloadApk(
+        "ladder-assist",
+        "梯子辅助",
+        "",
+        path.join(__dirname, "..", "static", "latest.apk"),
+    );
 
     fs.rmSync(dataPath, { recursive: true, force: true });
     const finalJson = {
@@ -68,6 +77,12 @@ async function downloadApk(codename, friendlyName, url) {
                 package: v2rayng.package,
                 version: v2rayng.version,
                 filename: v2rayng.filename,
+            },
+            {
+                ame: ladderAssist.friendlyName,
+                package: ladderAssist.package,
+                version: ladderAssist.version,
+                filename: ladderAssist.filename,
             },
         ],
     };
