@@ -13,9 +13,10 @@ fs.mkdirSync(cachePath);
 
 async function downloadApk(codename, friendlyName, url, localPath = undefined) {
     const apkPath = localPath || path.join(cachePath, `${codename}_newest.apk`);
-    if (url.length > 0) {
+    if (typeof url === "object" || url.length > 0) {
         console.log(`Downloading ${codename}...`);
-        const apkRes = await fetch(url);
+        const arm64URL = typeof url === "string" ? url : url["arm64-v8a"];
+        const apkRes = await fetch(arm64URL);
         const apkPath = path.join(cachePath, `${codename}_newest.apk`);
         const apkFs = fs.createWriteStream(apkPath, { flags: "wx" });
         await finished(Readable.fromWeb(apkRes.body).pipe(apkFs));
@@ -36,10 +37,30 @@ async function downloadApk(codename, friendlyName, url, localPath = undefined) {
     fs.copyFileSync(apkPath, destApkPath);
     console.log(`Copied ${codename}.`);
 
+    let finalFilename = destApkFilename;
+
+    if (typeof url === "object") {
+        finalFilename = { "arm64-v8a": finalFilename };
+        for (const arch of Object.keys(url)) {
+            if (arch === "arm64-v8a") continue;
+            console.log(`Downloading ${codename} for arch ${arch}...`);
+            const archURL = url[arch];
+            // eslint-disable-next-line no-await-in-loop
+            const apkRes = await fetch(archURL);
+            const destApkFilename = `${codename}_${apkVersion}_${arch}.apk`;
+            const destApkPath = path.join(destApkFolderPath, destApkFilename);
+            const apkFs = fs.createWriteStream(destApkPath, { flags: "wx" });
+            // eslint-disable-next-line no-await-in-loop
+            await finished(Readable.fromWeb(apkRes.body).pipe(apkFs));
+            finalFilename[arch] = destApkFilename;
+            console.log(`Downloaded ${codename} for arch ${arch}.`);
+        }
+    }
+
     return {
         version: apkVersion,
         package: apkPackage,
-        filename: destApkFilename,
+        filename: finalFilename,
         friendlyName,
     };
 }
@@ -53,7 +74,12 @@ async function downloadApk(codename, friendlyName, url, localPath = undefined) {
     const v2rayng = await downloadApk(
         "v2rayng",
         "v2rayNG",
-        "https://github.com/2dust/v2rayNG/releases/download/1.8.5/v2rayNG_1.8.5.apk",
+        {
+            "arm64-v8a": "https://github.com/2dust/v2rayNG/releases/download/1.8.5/v2rayNG_1.8.5_arm64-v8a.apk",
+            "armeabi-v7a": "https://github.com/2dust/v2rayNG/releases/download/1.8.5/v2rayNG_1.8.5_armeabi-v7a.apk",
+            "x86": "https://github.com/2dust/v2rayNG/releases/download/1.8.5/v2rayNG_1.8.5_x86.apk",
+            "x86_64": "https://github.com/2dust/v2rayNG/releases/download/1.8.5/v2rayNG_1.8.5_x86_64.apk",
+        },
     );
     const ladderAssist = await downloadApk(
         "ladder-assist",
