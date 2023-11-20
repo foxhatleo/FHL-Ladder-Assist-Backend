@@ -9,8 +9,8 @@ const app = express();
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use("apk", express.static(path.join(__dirname, "data", "apk")));
 
+app.use("/apk", express.static(path.join(__dirname, "data", "apk")));
 app.use("/", indexRouter);
 
 module.exports = app;
