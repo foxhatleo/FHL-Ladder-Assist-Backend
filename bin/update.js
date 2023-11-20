@@ -79,7 +79,7 @@ async function downloadApk(codename, friendlyName, url, localPath = undefined) {
                 filename: v2rayng.filename,
             },
             {
-                ame: ladderAssist.friendlyName,
+                name: ladderAssist.friendlyName,
                 package: ladderAssist.package,
                 version: ladderAssist.version,
                 filename: ladderAssist.filename,
