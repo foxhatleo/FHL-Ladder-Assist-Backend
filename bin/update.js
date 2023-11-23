@@ -111,6 +111,9 @@ async function downloadApk(codename, friendlyName, url, localPath = undefined) {
                 filename: ladderAssist.filename,
             },
         ],
+        deleteApps: [
+
+        ],
     };
     await fs.writeFileSync(dataPath, JSON.stringify(finalJson), "utf8");
     console.log("Finished writing data JSON.");
