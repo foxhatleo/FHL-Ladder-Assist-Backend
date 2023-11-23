@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/apk", express.static(path.join(__dirname, "data", "apk")));
-app.use("/static", express.static(path.join(__dirname, "static")));
+app.use("/conf", express.static(path.join(__dirname, "static", "conf")));
 app.use("/", indexRouter);
 
 module.exports = app;
