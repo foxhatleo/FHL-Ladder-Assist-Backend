@@ -18,7 +18,7 @@ async function downloadApk(codename, friendlyName, url, localPath = undefined) {
         const arm64URL = typeof url === "string" ? url : url["arm64-v8a"];
         const apkRes = await fetch(arm64URL);
         const apkPath = path.join(cachePath, `${codename}_newest.apk`);
-        const apkFs = fs.createWriteStream(apkPath, { flags: "wx" });
+        const apkFs = fs.createWriteStream(apkPath, { flags: "w" });
         await finished(Readable.fromWeb(apkRes.body).pipe(apkFs));
         console.log(`Downloaded ${codename}.`);
     }
@@ -49,7 +49,7 @@ async function downloadApk(codename, friendlyName, url, localPath = undefined) {
             const apkRes = await fetch(archURL);
             const destApkFilename = `${codename}_${apkVersion}_${arch}.apk`;
             const destApkPath = path.join(destApkFolderPath, destApkFilename);
-            const apkFs = fs.createWriteStream(destApkPath, { flags: "wx" });
+            const apkFs = fs.createWriteStream(destApkPath, { flags: "w" });
             // eslint-disable-next-line no-await-in-loop
             await finished(Readable.fromWeb(apkRes.body).pipe(apkFs));
             finalFilename[arch] = destApkFilename;
