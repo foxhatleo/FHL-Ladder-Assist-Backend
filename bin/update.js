@@ -112,7 +112,9 @@ async function downloadApk(codename, friendlyName, url, localPath = undefined) {
             },
         ],
         deleteApps: [
-
+            "com.getsurfboard",
+            "com.github.kr328.clash",
+            "com.github.shadowsocks",
         ],
     };
     await fs.writeFileSync(dataPath, JSON.stringify(finalJson), "utf8");
