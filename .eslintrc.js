@@ -1,24 +1,6 @@
 const customRules = {
     "import/extensions": "off",
     "import/prefer-default-export": "off",
-    "jsx-a11y/anchor-is-valid": "off",
-    "jsx-a11y/click-events-have-key-events": "off",
-    "jsx-a11y/no-static-element-interactions": "off",
-    "react/display-name": "off",
-    "react/function-component-definition": [
-        "error",
-        {
-            namedComponents: "arrow-function",
-            unnamedComponents: "arrow-function",
-        },
-    ],
-    "react/jsx-filename-extension": "off",
-    "react/jsx-indent": ["error", 4],
-    "react/jsx-indent-props": ["error", 4],
-    "react/jsx-props-no-spreading": "off",
-    "react/require-default-props": "off",
-    "react/no-array-index-key": "off",
-    "react-hooks/exhaustive-deps": "off",
     "class-methods-use-this": "off",
     "indent": ["error", 4],
     "max-len": ["error", { code: 120 }],
@@ -48,7 +30,14 @@ const customRules = {
 };
 
 module.exports = {
-    extends: ["airbnb", "eslint:recommended"],
-    plugins: ["unused-imports", "import", "jsx-a11y", "react"],
+    extends: ["eslint:recommended"],
+    plugins: ["unused-imports", "import"],
+    parserOptions: {
+        ecmaVersion: "latest",
+    },
+    env: {
+        es6: true,
+        node: true,
+    },
     rules: customRules,
 };
