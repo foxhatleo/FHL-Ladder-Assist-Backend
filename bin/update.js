@@ -84,7 +84,7 @@ async function downloadApk(codename, friendlyName, url, localPath = undefined) {
         "ladder-assist",
         "梯子辅助",
         "",
-        path.join(__dirname, "..", "static", "latest.apk"),
+        path.join(__dirname, "..", "data", "latest.apk"),
     );
 
     fs.rmSync(dataPath, { recursive: true, force: true });
