@@ -57,7 +57,7 @@ async function downloadApk(codename, friendlyName, url, localPath = undefined) {
     // }
 
     return {
-        latestVersion: apkVersion,
+        latestVersionCode: apkVersion,
         packageName: apkPackage,
         downloadPath: finalFilename,
         friendlyName,
