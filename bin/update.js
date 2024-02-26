@@ -70,16 +70,11 @@ async function downloadApk(codename, friendlyName, url, localPath = undefined) {
         "ExpressVPN",
         "https://www.expressvpn.com/latest/android",
     );
-    // const v2rayng = await downloadApk(
-    //     "v2rayng",
-    //     "v2rayNG",
-    //     {
-    //         "arm64-v8a": "https://github.com/2dust/v2rayNG/releases/download/1.8.5/v2rayNG_1.8.5_arm64-v8a.apk",
-    //         "armeabi-v7a": "https://github.com/2dust/v2rayNG/releases/download/1.8.5/v2rayNG_1.8.5_armeabi-v7a.apk",
-    //         "x86": "https://github.com/2dust/v2rayNG/releases/download/1.8.5/v2rayNG_1.8.5_x86.apk",
-    //         "x86_64": "https://github.com/2dust/v2rayNG/releases/download/1.8.5/v2rayNG_1.8.5_x86_64.apk",
-    //     },
-    // );
+    const v2rayng = await downloadApk(
+        "v2rayng",
+        "v2rayNG",
+        "https://github.com/2dust/v2rayNG/releases/download/1.8.15/v2rayNG_1.8.15.apk",
+    );
     const ladderAssist = await downloadApk(
         "ladder-assist",
         "梯子辅助",
@@ -90,6 +85,7 @@ async function downloadApk(codename, friendlyName, url, localPath = undefined) {
     fs.rmSync(dataPath, { recursive: true, force: true });
     const finalJson = [
         expressVpn,
+        v2rayng,
         ladderAssist,
     ];
     await fs.writeFileSync(dataPath, JSON.stringify(finalJson), "utf8");
