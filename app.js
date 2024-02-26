@@ -7,7 +7,7 @@ const app = express();
 app.use(logger("dev"));
 
 app.get("/", (req, res) => {
-    res.redirect("/latest.apk");
+    res.redirect("/latest.apk?" + Math.random().toString().substring(2));
 });
 app.use("/", express.static(path.join(__dirname, "data")));
 
